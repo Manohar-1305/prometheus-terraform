@@ -1,3 +1,4 @@
+# This script will create Prometheus, Grafana, Alertamanger and some more resources
 provider "aws" {
   region = "ap-south-1"
 }
@@ -26,7 +27,7 @@ resource "aws_subnet" "hosting_subnet" {
   }
 }
 
-# Create an Internet Gateway
+
 resource "aws_internet_gateway" "hosting_igw" {
   vpc_id = aws_vpc.hosting_vpc.id
 
@@ -35,7 +36,7 @@ resource "aws_internet_gateway" "hosting_igw" {
   }
 }
 
-# Create a Route Table
+
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.hosting_vpc.id
 
@@ -44,20 +45,20 @@ resource "aws_route_table" "public_rt" {
   }
 }
 
-# Add a Route for Internet Access
+
 resource "aws_route" "internet_access" {
   route_table_id         = aws_route_table.public_rt.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.hosting_igw.id
 }
 
-# Associate the Route Table with the Public Subnet
+
 resource "aws_route_table_association" "public_subnet_assoc" {
   subnet_id      = aws_subnet.hosting_subnet.id
   route_table_id = aws_route_table.public_rt.id
 }
 
-# Create a Security Group (Open to Everywhere)
+
 resource "aws_security_group" "open_sg" {
   vpc_id = aws_vpc.hosting_vpc.id
 
@@ -82,7 +83,7 @@ resource "aws_security_group" "open_sg" {
   }
 }
 
-# EC2 Instances
+
 resource "aws_instance" "Prometheus" {
   ami                    = "ami-03bb6d83c60fc5f7c"
   instance_type          = "t2.medium"
